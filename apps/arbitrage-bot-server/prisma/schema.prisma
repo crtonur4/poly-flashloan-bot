@@ -1,0 +1,48 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Token {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  symbolField String?
+  name        String?
+}
+
+model Exchange {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  name        String?
+  apiEndpoint String?
+}
+
+model ArbitragePath {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tokenA    String?
+  tokenB    String?
+  tokenC    String?
+  exchangeA String?
+  exchangeB String?
+  exchangeC String?
+  trades    Trade[]
+}
+
+model Trade {
+  id              String         @id @default(cuid())
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  initialAmount   Float?
+  profit          Float?
+  timestamp       DateTime?
+  arbitragePath   ArbitragePath? @relation(fields: [arbitragePathId], references: [id])
+  arbitragePathId String?
+}
